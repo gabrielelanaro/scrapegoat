@@ -1,9 +1,78 @@
 import hashlib
 import json
+from dataclasses import asdict, dataclass, replace
+from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, List
 
 from .types import Candidate, LabeledData
+
+# Alisases for types
+UrlType = str
+VersionType = int
+
+
+@dataclass(frozen=True)
+class PageInfo:
+    # The relative path where the particular item is stored
+    path: str
+    timestamp: str
+    url: UrlType
+    version: VersionType
+
+
+def _hash(txt: str):
+    m = hashlib.sha256()
+    m.update(txt.encode())
+    return m.hexdigest()
+
+
+class StoreIndex:
+    def __init__(self, data: Dict[UrlType, Dict[VersionType, PageInfo]]):
+        """A simple index to retrieve information about the store"""
+        self._data = data
+
+    @classmethod
+    def from_dict(cls, data: Dict[Any, Any]):
+        return cls(
+            {
+                url: {v: PageInfo(**pi) for v, pi in versions.items()}
+                for url, versions in data.items()
+            }
+        )
+
+    def to_dict(self):
+        return {
+            url: {v: asdict(pi) for v, pi in versions.items()}
+            for url, versions in self._data.items()
+        }
+
+    def has_page(self, url: UrlType) -> bool:
+        return url in self._data
+
+    def get_page_info(self, url: UrlType, version: VersionType) -> PageInfo:
+        return self._data[url][version]
+
+    def get_latest_version(self, url: UrlType) -> int:
+        if not self.has_page(url):
+            raise ValueError(f"url {url} not in index")
+
+        if not self._data[url]:
+            raise ValueError(f"No versions stored for url {url}")
+
+        return max(self._data[url])
+
+    def set_page_info(self, url: UrlType, page_info: PageInfo) -> None:
+        if not self.has_page(url):
+            self._data[url] = {}
+        self._data[url].update({page_info.version: page_info})
+
+    def get_latest_page_info(self, url: UrlType) -> PageInfo:
+        """Get the latest page info"""
+        return self.get_page_info(url, self.get_latest_version(url))
+
+
+IndexType = Dict[UrlType, Dict[VersionType, PageInfo]]
 
 
 class Store:
@@ -13,36 +82,48 @@ class Store:
             self.dir.mkdir()
 
         self._index_path = self.dir / "index.json"
-        self._index = {}
+        self._index = StoreIndex({})
 
         if self._index_path.exists():
             with self._index_path.open() as f:
-                self._index = json.load(f)
+                self._index = StoreIndex.from_dict(json.load(f))
 
-    def get_or_create_page(self, url):
-        path = self.dir / _hash(url)
+    def get_page(self, url: str) -> "Page":
+        return Page(self, self._index.get_latest_page_info(url))
+
+    def new_page(self, url: str) -> "Page":
+        """Store a new version of a page"""
+        if self._index.has_page(url):
+            version = self._index.get_latest_version() + 1
+        else:
+            version = 1
+
+        timestamp = datetime.now().isoformat()
+        path = self.dir / _hash(url) / f"{version:04d}"
+        page_info = PageInfo(
+            path=str(path.relative_to(self.dir)),
+            version=version,
+            url=url,
+            timestamp=timestamp,
+        )
+
         if not path.exists():
-            path.mkdir()
+            path.mkdir(parents=True)
 
-        self._index[url] = {"path": str(path.relative_to(self.dir))}
+        self._index.set_page_info(url, page_info)
         self._flush_index()
-        return Page(self, path)
+        return Page(self, page_info)
 
     def _flush_index(self):
         with self._index_path.open("w") as f:
-            json.dump(self._index, f)
-
-
-def _hash(text: str) -> str:
-    m = hashlib.sha256()
-    m.update(text.encode())
-    return m.hexdigest()
+            json.dump(self._index.to_dict(), f)
 
 
 class Page:
-    def __init__(self, store: Store, path: Path):
+    def __init__(self, store: Store, info: PageInfo):
         self._store = store
-        self._path = path
+        self.info = info
+        self._path = store.dir / self.info.path
 
     @property
     def screenshot_path(self) -> Path:

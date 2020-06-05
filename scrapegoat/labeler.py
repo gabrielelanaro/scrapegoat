@@ -3,9 +3,8 @@ from collections import defaultdict
 from typing import Dict, List
 
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
-
 from modAL.models import ActiveLearner
+from sklearn.ensemble import RandomForestClassifier
 
 from .diagnostics import Diagnostics
 from .transforms import CandidateTransform
