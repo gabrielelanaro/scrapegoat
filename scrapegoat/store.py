@@ -94,7 +94,7 @@ class Store:
     def new_page(self, url: str) -> "Page":
         """Store a new version of a page"""
         if self._index.has_page(url):
-            version = self._index.get_latest_version() + 1
+            version = self._index.get_latest_version(url) + 1
         else:
             version = 1
 
