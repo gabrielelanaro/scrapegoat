@@ -18,3 +18,13 @@ def test_store_new_page(tmp_path):
     page = store.new_page("http://www.google.com")
     assert page.info.version == 2
     assert (store.dir / page.info.path).exists()
+
+def test_store_reload(tmp_path):
+    store = Store(tmp_path / "store")
+    store.new_page("http://www.google.com")
+    store.new_page("http://www.google.com")
+
+    store = Store(tmp_path / "store")
+    page = store.get_page("http://www.google.com")
+    assert page.info.version == 2
+    assert (store.dir / page.info.path).exists()

@@ -28,7 +28,7 @@ class PageExtractor:
         )  # May need manual adjustment
 
         # Retrieve all the boxes and element
-        JSCODE = open("immoscout/js/retrieve.js").read()
+        JSCODE = open("scrapegoat/js/retrieve.js").read()
         candidates = self.driver.execute_script(JSCODE + "return main();")
         for c in candidates:
             c.update(url=url)

@@ -36,7 +36,7 @@ class StoreIndex:
     def from_dict(cls, data: Dict[Any, Any]):
         return cls(
             {
-                url: {v: PageInfo(**pi) for v, pi in versions.items()}
+                url: {int(v): PageInfo(**pi) for v, pi in versions.items()}
                 for url, versions in data.items()
             }
         )

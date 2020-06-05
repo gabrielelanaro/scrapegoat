@@ -13,7 +13,7 @@ class Driver:
         self.extractor = PageExtractor.default()
         self.store = store
 
-    def extract(self, url: str, store: Store):
+    def extract(self, url: str):
         # We get the url
         candidates = self.extractor.get(url)
 
