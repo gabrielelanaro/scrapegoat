@@ -23,13 +23,14 @@ class Diagnostics:
             self.draw_candidate(c, color=color)
         return self
 
-    def draw_candidate(self, cand: Candidate, color: str = "red"):
+    def draw_candidate(self, cand: Candidate, color: str = "red", width=1):
         im = self._im
         draw = ImageDraw.Draw(im)
 
         draw.rectangle(
             xy=(cand.rect.left, cand.rect.top, cand.rect.right, cand.rect.bottom),
             outline=color,
+            width=width,
         )
         return self
 

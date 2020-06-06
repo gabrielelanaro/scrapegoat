@@ -58,6 +58,7 @@ class LabeledData:
     label_name: str
     value: LabelValue
     ref: str
+    remarks: List[str] = field(default_factory=list)
 
     def serialize(self):
         return asdict(replace(self, value=self.value.value))
