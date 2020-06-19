@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { CandidateInfo } from "../Store";
+import { CandidateInfo } from "../models";
 
 interface Rect {
   index: number;
@@ -34,15 +34,15 @@ export default class DrawingArea extends Vue {
   @Prop() onselect!: (arg: CandidateInfo) => null;
 
   private canvasCtx: CanvasRenderingContext2D | null = null;
-  private boxes: Rect[];
-  private boxToCandidate: Map<number, CandidateInfo>;
+  private boxes: Rect[] = [];
+  private boxToCandidate: Map<number, CandidateInfo> = new Map();
 
-  constructor() {
-    super();
+  @Watch("candidates")
+  onCandidatesUpdated(candidates: CandidateInfo[]) {
     const boxes: Rect[] = [];
     const boxToCandidate = new Map();
 
-    this.candidates.forEach((item, index) => {
+    candidates.forEach((item, index) => {
       const box = {
         index: index,
         x: item.rect.left,
@@ -59,6 +59,12 @@ export default class DrawingArea extends Vue {
 
     this.boxes = boxes;
     this.boxToCandidate = boxToCandidate;
+    /// Draw all rectangles in bulk
+    const styledBoxes = this.boxes.map(item => {
+      return this.computeBoxStyle(item);
+    });
+
+    if (this.canvasCtx) this.drawRects(this.canvasCtx, styledBoxes);
   }
 
   computeBoxStyle(item: Rect) {

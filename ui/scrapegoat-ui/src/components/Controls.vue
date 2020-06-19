@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { LabelType } from "../Store";
+import { LabelType } from "../models";
 
 @Component
 export default class Controls extends Vue {

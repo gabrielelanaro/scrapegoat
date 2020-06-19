@@ -2,34 +2,34 @@
   <section class="section">
     <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
     <DrawingArea
-      v-if="store"
-      :candidates="store.candidates"
-      :img="store.image"
-      :selected="store.selected"
+      v-if="$store.state.image"
+      :candidates="$store.state.tagger.candidates"
+      :img="$store.state.image"
+      :selected="$store.state.tagger.selected"
       :onselect="onselect"
     />
     <div id="sidebar-page">
       <section class="sidebar-layout">
         <b-sidebar position="fixed" open right fullheight>
           <Controls
-            v-if="store"
-            :selectedLabel="store.labelName"
-            :value="store.labelValue"
-            :labels="store.availableLabels"
-            v-on:save="store.save().then()"
-            v-on:change-label="store.switchLabelName($event)"
-            v-on:change-value="store.switchLabelValue($event)"
+            v-if="$store.state.tagger.candidates"
+            :selectedLabel="$store.state.tagger.labelName"
+            :value="$store.state.tagger.labelValue"
+            :labels="$store.state.tagger.availableLabels"
+            v-on:save="$store.dispatch('tagger/save')"
+            v-on:change-label="$store.commit('tagger/switchLabelName', $event)"
+            v-on:change-value="$store.commit('tagger/switchLabelValue', $event)"
           />
           <Selector
-            v-if="store"
-            :candidates="store.candidates"
-            :selected="store.selected"
+            v-if="$store.state.tagger.labels"
+            :candidates="$store.state.tagger.candidates"
+            :selected="$store.state.tagger.selected"
             @selected="onselect"
           />
           <LabelViewer
-            v-if="store"
-            :candidates="store.candidates"
-            :selected="store.selected"
+            v-if="$store.state.tagger.labels"
+            :candidates="$store.state.tagger.candidates"
+            :selected="$store.state.tagger.selected"
             @select="onselect"
           />
         </b-sidebar>
@@ -44,7 +44,10 @@ import DrawingArea from "./components/DrawingArea.vue";
 import Controls from "./components/Controls.vue";
 import LabelViewer from "./components/LabelViewer.vue";
 import Selector from "./components/Selector.vue";
-import { Store, CandidateInfo, LabelType } from "./Store";
+// import { Store, CandidateInfo, LabelType } from "./Store";
+import { CandidateInfo, LabelType } from "./models";
+import store from "./store/Main";
+
 import Buefy from "buefy";
 import "buefy/dist/buefy.css";
 
@@ -56,26 +59,25 @@ Vue.use(Buefy);
     DrawingArea,
     LabelViewer,
     Selector
-  }
+  },
+  store
 })
 export default class App extends Vue {
-  store: null | Store = null;
   created() {
-    Store.load().then(store => (this.store = store));
+    this.$store.dispatch("loadApp");
   }
 
   onselect(arg: CandidateInfo) {
-    if (this.store) {
+    if (this.$store.state.tagger.labels) {
       /* eslint-disable */
 
       const lbl = {
         ref: arg.url + arg.path,
-        label_name: this.store.labelName,
-        value: this.store.labelValue,
+        label_name: this.$store.state.tagger.labelName,
+        value: this.$store.state.tagger.labelValue,
         remarks: ["manual"]
       };
-      this.store.toggleLabel(lbl);
-      this.store.recalculateSelected();
+      this.$store.commit("tagger/toggleLabel", lbl);
     }
   }
 }

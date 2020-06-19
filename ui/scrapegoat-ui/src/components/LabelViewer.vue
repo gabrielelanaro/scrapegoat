@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { CandidateInfo } from "../Store";
+import { CandidateInfo } from "../models";
 import Label from "./Label.vue";
 
 @Component({ components: { Label } })

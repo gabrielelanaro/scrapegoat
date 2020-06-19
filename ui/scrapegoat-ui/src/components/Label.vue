@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { CandidateInfo } from "../Store";
+import { CandidateInfo } from "../models";
 
 @Component
 export default class Label extends Vue {
