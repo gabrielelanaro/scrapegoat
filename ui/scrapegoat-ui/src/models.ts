@@ -10,6 +10,14 @@ export interface LabelInfo {
     remarks: string[];
 }
 
+export interface LinkLabelInfo {
+    source: string;
+    target: string;
+    link_name: string;
+    value: LabelType;
+    remarks: string[];
+}
+
 export interface CandidateInfo {
     rect: { top: number; bottom: number; left: number; right: number };
     style: {
