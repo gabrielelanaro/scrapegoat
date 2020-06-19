@@ -1,6 +1,6 @@
 from scrapegoat import factories
 from scrapegoat.dataset import BinaryDataset
-from scrapegoat.labeler import LabelerProcess
+from scrapegoat.labeler import Labeler
 from scrapegoat.transforms import CandidateTransform
 from scrapegoat.types import LabelValue
 
@@ -18,7 +18,7 @@ def test_labeler():
         label_name="label",
         transform=CandidateTransform(),
     )
-    labeler = LabelerProcess(dataset)
+    labeler = Labeler(dataset)
 
     ix, c = labeler.query()
     labeler.teach(ix, LabelValue.NEG)

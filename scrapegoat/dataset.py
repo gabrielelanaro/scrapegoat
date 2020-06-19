@@ -20,12 +20,15 @@ class BinaryDataset:
         self._labels = labels[:]
 
         # Transformed dataset
-        self._tf_dataset = np.array([self._tf.encode(d) for d in self._dataset])
+        self._tf_dataset = self.apply_transform(candidates)
 
         # We need to extract the labels
         self._labels_by_ref, self._labeled, self._pool = self._build_labeled_unlabeled_arrays(
             labels, label_name
         )
+
+    def apply_transform(self, candidates: List[Candidate]):
+        return np.array([self._tf.encode(d) for d in candidates])
 
     def labeled(self):
         return (
@@ -41,8 +44,9 @@ class BinaryDataset:
         )
 
     def add_label(self, unlabeled_index: int, val: LabelValue):
-        candidate = self._dataset[self._pool[unlabeled_index]]
-        self._labeled.append(unlabeled_index)
+        ix = self._pool[unlabeled_index]
+        candidate = self._dataset[ix]
+        self._labeled.append(ix)
         self._labels_by_ref[candidate.ref] = val
         self._labels.append(
             LabeledData(label_name=self.label_name, value=val, ref=candidate.ref)

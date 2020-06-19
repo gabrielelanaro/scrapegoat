@@ -24,7 +24,14 @@ class CandidateTransform:
                 "H1",
                 "H2",
                 "H3",
+                "H4",
+                "H5",
+                "H6",
                 "DD",
+                "LI",
+                "LL",
+                "UL",
+                "TABLE",
             ]
         )
         self._font_style = OneHotTransform(["normal", "italic"])
@@ -51,6 +58,7 @@ class CandidateTransform:
                 [
                     feats["is_valid_rect"],
                     candidate.rect.left,
+                    candidate.rect.top,
                     candidate.rect.width(),
                     candidate.rect.height,
                     feats["font_size"],

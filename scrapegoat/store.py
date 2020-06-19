@@ -137,6 +137,10 @@ class Page:
     def labels_path(self) -> Path:
         return self._path / "labels.json"
 
+    @property
+    def dom_path(self) -> Path:
+        return self._path / "dom.html"
+
     def save_candidates(self, candidates: List[Candidate]):
         with (self.candidates_path).open("w") as f:
             json.dump([c.serialize() for c in candidates], f, sort_keys=True, indent=2)

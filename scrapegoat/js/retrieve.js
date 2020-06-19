@@ -83,7 +83,7 @@ function getStyleFeatures(node) {
 
 var main = () => {
     // Annoying iframe
-    Array.from(document.getElementsByTagName('iframe')).forEach((node) => node.remove());
+    // Array.from(document.getElementsByTagName('iframe')).forEach((node) => node.remove());
 
     // Retrieve all elements
     var collection = document.getElementsByTagName("*");

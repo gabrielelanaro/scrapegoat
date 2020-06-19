@@ -21,7 +21,10 @@ def _label(labels: List[str], train_label: str):
     return None
 
 
-class LabelerProcess:
+# TODO: rename to Trainer, or Learner, because that's what it does
+
+
+class Labeler:
     def __init__(self, dataset: BinaryDataset):
         self._dataset = dataset
 
@@ -40,16 +43,17 @@ class LabelerProcess:
         d.reset()
         X_unl, X_tf = self._dataset.unlabeled()
 
-        predictions = self._model.predict_proba(X_tf)[:, 1]
+        if len(X_unl) >= 1:
+            predictions = self._model.predict_proba(X_tf)[:, 1]
 
-        for i, c in enumerate(X_unl):
-            if predictions[i] >= 0.5:
-                d.draw_candidate(c, color="blue", width=2)
+            for i, c in enumerate(X_unl):
+                if predictions[i] >= 0.5:
+                    d.draw_candidate(c, color="blue", width=2)
 
         X_lab, _, y = self._dataset.labeled()
 
         for i, c in enumerate(X_lab):
-            if y > 0.5:
+            if y[i] > 0.5:
                 d.draw_candidate(c, color="green")
             else:
                 d.draw_candidate(c, color="red")

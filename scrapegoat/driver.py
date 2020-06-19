@@ -22,4 +22,5 @@ class Driver:
 
         self.extractor.save_screenshot(str(page.screenshot_path))
         page.save_candidates(candidates)
+        self.extractor.save_dom(str(page.dom_path))
         return page
