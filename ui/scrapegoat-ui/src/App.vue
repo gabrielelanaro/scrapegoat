@@ -1,12 +1,12 @@
 <template>
   <section class="section">
     <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
-    <DrawingArea
+    <VisualSelector
       v-if="$store.state.image"
       :candidates="$store.state.tagger.candidates"
       :img="$store.state.image"
       :selected="$store.state.tagger.selected"
-      :onselect="onselect"
+      @select="onselect"
     />
     <div id="sidebar-page">
       <section class="sidebar-layout">
@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import DrawingArea from "./components/DrawingArea.vue";
+import VisualSelector from "./components/VisualSelector.vue";
 import Controls from "./components/Controls.vue";
 import LabelViewer from "./components/LabelViewer.vue";
 import Selector from "./components/Selector.vue";
@@ -56,7 +56,7 @@ Vue.use(Buefy);
 @Component({
   components: {
     Controls,
-    DrawingArea,
+    VisualSelector,
     LabelViewer,
     Selector
   },

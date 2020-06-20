@@ -1,4 +1,4 @@
 export interface RootState {
-    message: string,
-    image?: HTMLImageElement,
+    message: string;
+    image?: HTMLImageElement;
 }

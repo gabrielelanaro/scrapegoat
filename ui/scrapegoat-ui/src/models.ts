@@ -32,3 +32,39 @@ export interface CandidateInfo {
     path: string;
 }
 
+export interface RectData {
+    key: string;
+    x: number;
+    y: number;
+    z: number;
+    width: number;
+    height: number;
+    stroke?: string;
+    fill?: string;
+}
+
+
+export interface Drawable {
+    draw: (drawer: Drawer) => void;
+}
+
+function autoImplement<T>(defaults?: Partial<T>) {
+    // Utility function to initialize an object from an interface
+    return class {
+        constructor(data: T) {
+            Object.assign(this, { ...defaults, ...data });
+        }
+    } as new (data: T) => T
+}
+
+
+export class Rect extends autoImplement<RectData>() implements Drawable {
+    draw(drawer: Drawer) {
+        drawer.drawRect(this);
+    }
+}
+
+export interface Drawer {
+    clear: () => void;
+    drawRect: (rect: RectData) => void;
+}
