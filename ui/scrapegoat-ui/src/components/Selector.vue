@@ -1,18 +1,9 @@
 <template>
   <div class="p-1">
-    <p class="menu-label">search</p>
+    <p class="menu-label">{{ title }}</p>
     <b-input size="is-small" v-model="query" placeholder="Search by text" type="search"></b-input>
     <div v-for="match in matches" v-bind:key="match.path">
       <Label :candidate="match" :select-control="true" @select="$emit('selected', match)" />
-      <!-- 
-      <input
-        type="checkbox"
-        id="match"
-        name="scales"
-        v-on:change="$emit('selected', match)"
-        :checked="selected[match.path]"
-      />
-      <label for="match">{{ match.text.slice(0, 500) }}</label>-->
     </div>
   </div>
 </template>
@@ -24,8 +15,9 @@ import Label from "./Label.vue";
 
 @Component({ components: { Label } })
 export default class Selector extends Vue {
+  @Prop() private title!: string;
   @Prop() private candidates!: CandidateInfo[];
-  @Prop() private selected!: { [key: string]: boolean };
+
   private query = "";
 
   get matches() {

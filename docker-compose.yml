@@ -4,5 +4,11 @@ services:
     build: .
     ports:
       - "8081:8081"
+    volumes:
+      - ./:/app
   ui:
     build: ui/scrapegoat-ui
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ui/scrapegoat-ui:/ui

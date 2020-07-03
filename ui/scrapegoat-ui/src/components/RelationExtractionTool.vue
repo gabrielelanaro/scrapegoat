@@ -44,7 +44,7 @@ export default class VisualSelector extends Vue {
       fill: "#FF000080"
     };
     const unselectedStyle = {
-      stroke: "#00000088"
+      stroke: "#000000"
     };
 
     this.candidates.forEach((item, index) => {

@@ -1,7 +1,7 @@
 <template>
   <div id="drawingContainer">
     <img id="myimg" :src="image.src" />
-    <canvas id="mycanvas" v-on:mousedown="click"></canvas>
+    <canvas ref="canvas" id="mycanvas" v-on:mousedown="click"></canvas>
   </div>
 </template>
 
@@ -15,6 +15,7 @@ import { CanvasDrawer } from "../drawing";
 export default class DrawingBoard extends Vue {
   @Prop() image!: HTMLImageElement;
   @Prop() shapes!: Drawable[];
+  @Prop() scrollTo?: { x: number; y: number };
 
   private drawer?: CanvasDrawer;
 
@@ -32,13 +33,29 @@ export default class DrawingBoard extends Vue {
     }
   }
 
-  @Watch("shapes")
-  onShapeChanged() {
-    console.log("Shapes have changed");
+  updated() {
     if (this.drawer) this.redrawShapes(this.drawer);
   }
 
+  @Watch("shapes")
+  onShapeChanged() {
+    console.log("shape changed");
+    if (this.drawer) this.redrawShapes(this.drawer);
+  }
+
+  @Watch("scrollTo")
+  onScrollTo() {
+    if (this.scrollTo && this.drawer) {
+      const canvas = this.$refs.canvas as HTMLCanvasElement;
+      const x = canvas.getBoundingClientRect().left;
+      const y = canvas.getBoundingClientRect().top;
+
+      window.scrollTo(this.scrollTo.x - x, this.scrollTo.y - y);
+    }
+  }
+
   redrawShapes(drawer: Drawer) {
+    console.log("redrawing");
     drawer.clear();
     this.shapes.forEach(shape => shape.draw(drawer));
   }

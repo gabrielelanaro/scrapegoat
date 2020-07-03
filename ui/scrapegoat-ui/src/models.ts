@@ -13,7 +13,7 @@ export interface LabelInfo {
 export interface LinkLabelInfo {
     source: string;
     target: string;
-    link_name: string;
+    linkName: string;
     value: LabelType;
     remarks: string[];
 }
@@ -39,10 +39,18 @@ export interface RectData {
     z: number;
     width: number;
     height: number;
+    lineWidth?: number;
     stroke?: string;
     fill?: string;
 }
 
+export interface ArrowData {
+    from: { x: number; y: number };
+    to: { x: number; y: number };
+    r: number;
+    lineWidth: number;
+    color: string;
+}
 
 export interface Drawable {
     draw: (drawer: Drawer) => void;
@@ -58,13 +66,22 @@ function autoImplement<T>(defaults?: Partial<T>) {
 }
 
 
-export class Rect extends autoImplement<RectData>() implements Drawable {
+export class Rect extends autoImplement<RectData>({ lineWidth: 1 }) implements Drawable {
     draw(drawer: Drawer) {
         drawer.drawRect(this);
     }
 }
 
+export class Arrow extends autoImplement<ArrowData>() implements Drawable {
+    draw(drawer: Drawer) {
+        drawer.drawArrow(this);
+    }
+}
+
+
+
 export interface Drawer {
     clear: () => void;
     drawRect: (rect: RectData) => void;
+    drawArrow: (arrow: ArrowData) => void;
 }
