@@ -18,6 +18,7 @@ class Rect:
     def height(self):
         return self.bottom - self.top
 
+    @property
     def width(self):
         return self.right - self.left
 
@@ -66,3 +67,26 @@ class LabeledData:
     @classmethod
     def from_dict(cls, data):
         return cls(**{**data, "value": LabelValue(data["value"])})
+
+
+@unique
+class PULabelType(Enum):
+    POS = LabelValue.POS.value
+    NEG = LabelValue.NEG.value
+    UNK = "u"
+
+
+@dataclass(frozen=True)
+class LinkType:
+    source: str
+    target: str
+    value: PULabelType
+    linkName: str = ""
+    remarks: List[str] = field(default_factory=list)
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(**{**data, "value": PULabelType(data["value"])})
+
+    def serialize(self):
+        return asdict(replace(self, value=self.value.value))

@@ -59,8 +59,11 @@ class CandidateTransform:
                     feats["is_valid_rect"],
                     candidate.rect.left,
                     candidate.rect.top,
-                    candidate.rect.width(),
+                    candidate.rect.right,
+                    candidate.rect.bottom,
+                    candidate.rect.width,
                     candidate.rect.height,
+                    candidate.rect.height / (candidate.rect.width + 0.0001),
                     feats["font_size"],
                     feats["font_weight"],
                 ],
@@ -101,4 +104,4 @@ class OneHotTransform:
 
 
 def is_valid_rect(rect: Rect):
-    return rect.width() > 0 and rect.height > 0
+    return rect.width > 0 and rect.height > 0
