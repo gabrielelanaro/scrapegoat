@@ -60,7 +60,12 @@ export default class SuggestLinkTool extends Vue {
   linkComponent: "source" | "target" = "source";
 
   get links() {
-    const links = this.$store.state.suggestLink.predictedLinks;
+    const links = this.$store.state.suggestLink.predictedLinks.concat(
+      this.$store.state.linker.links.filter(
+        (item: LinkLabelInfo) => item.value == LabelType.POS
+      )
+    );
+
     // TODO: extract positive links
     return links.map((item: LinkLabelInfo) => ({
       source: this.candidatesById[item.source],
@@ -86,6 +91,7 @@ export default class SuggestLinkTool extends Vue {
     const candidates = this.$store.state.tagger.candidates;
     const candidatesDrawn = new Set();
     // We draw all candidates first;
+
     this.links.forEach(link => {
       candidatesDrawn.add(link.source.path);
       candidatesDrawn.add(link.target.path);
@@ -107,6 +113,19 @@ export default class SuggestLinkTool extends Vue {
           stroke: "#FF0000"
         })
       );
+
+      const candFrom = link.source;
+      const candTo = link.target;
+
+      shapes.push(
+        new Arrow({
+          from: { x: candFrom.rect.left, y: candFrom.rect.top },
+          to: { x: candTo.rect.left, y: candTo.rect.top },
+          color: "#0000FF",
+          lineWidth: 3,
+          r: 3
+        })
+      );
     });
 
     if (selectedSource) {
@@ -115,7 +134,7 @@ export default class SuggestLinkTool extends Vue {
       shapes.push(
         new Rect({
           ...extractBoxSize(cand),
-          fill: "#00FF0080"
+          fill: "#00880080"
         })
       );
     }
@@ -126,7 +145,7 @@ export default class SuggestLinkTool extends Vue {
       shapes.push(
         new Rect({
           ...extractBoxSize(selectedTarget),
-          fill: "#FF000080"
+          fill: "#88000080"
         })
       );
     }

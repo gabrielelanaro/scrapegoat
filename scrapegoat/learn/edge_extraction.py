@@ -22,8 +22,7 @@ class ProbLink:
 
 @dataclass
 class EdgeExtractionModel(TransductiveModel):
-    n_estimators: int = 64
-    max_features: float = 1.0
+    n_estimators: int = 156
     max_samples: int = 100
     pos_thr: float = 0.5
 
