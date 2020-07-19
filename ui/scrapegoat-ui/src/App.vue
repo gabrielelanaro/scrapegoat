@@ -14,12 +14,14 @@ import SuggestLinkTool from "./tools/SuggestLinkTool.vue";
 import store from "./store/Main";
 import { Vue, Component } from "vue-property-decorator";
 import VueRouter from "vue-router";
+import registerFilters from "./filters";
 
 import Buefy from "buefy";
 import "buefy/dist/buefy.css";
 
 Vue.use(Buefy);
 Vue.use(VueRouter);
+registerFilters(Vue);
 
 const routes = [
   { path: "*", redirect: "/tool/linking" },

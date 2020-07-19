@@ -21,7 +21,7 @@ class ProbLabel:
 class NodeExtractionModel(
     TransductiveModel[List[Candidate], List[PULabelType], List[ProbLabel]]
 ):
-    n_estimators: int = 64
+    n_estimators: int = 256
     max_features: float = 1.0
     max_samples: int = 100
     pos_thr: float = 0.5

@@ -1,6 +1,11 @@
 <template>
   <section class="section">
-    <DrawingBoard v-if="$store.state.image" :shapes="shapes" :image="$store.state.image" />
+    <DrawingBoard
+      v-if="$store.state.image"
+      :shapes="shapes"
+      :image="$store.state.image"
+      :scroll-to="scrollState"
+    />
     <Sidebar>
       <SidebarBlock title="Tools">
         <b-button @click="suggest">Suggest</b-button>
@@ -58,6 +63,7 @@ import { RootState } from "../store/types";
 })
 export default class SuggestLinkTool extends Vue {
   linkComponent: "source" | "target" = "source";
+  scrollState = { x: 0, y: 0 };
 
   get links() {
     const links = this.$store.state.suggestLink.predictedLinks.concat(
@@ -194,6 +200,7 @@ export default class SuggestLinkTool extends Vue {
   }
 
   selectLink(link: { source: CandidateInfo; target: CandidateInfo }) {
+    this.scrollState = {x: 0, y: link.source.rect.top};
     this.$store.commit("linker/setSource", link.source);
     this.$store.commit("linker/setTarget", link.target);
   }

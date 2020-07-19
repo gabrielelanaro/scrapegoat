@@ -3,11 +3,11 @@
     <div class="media-content">
       <div>
         <span class="tag is-success">S</span>
-        {{ source.text }}
+        {{ source.text | truncate(20) }}
       </div>
       <div>
         <span class="tag is-danger">T</span>
-        {{ target.text }}
+        {{ target.text | truncate(100) }}
       </div>
     </div>
     <div class="media-right">

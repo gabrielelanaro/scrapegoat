@@ -50,7 +50,13 @@ export default class DrawingBoard extends Vue {
       const x = canvas.getBoundingClientRect().left;
       const y = canvas.getBoundingClientRect().top;
 
-      window.scrollTo(this.scrollTo.x - x, this.scrollTo.y - y);
+      const scrollOptions = {
+        left: this.scrollTo.x + x + window.scrollX,
+        top: this.scrollTo.y + y + window.scrollY,
+        behavior: "smooth" as 'smooth'
+      }
+      console.log("scrolling to ", scrollOptions);
+      window.scrollTo(scrollOptions);
     }
   }
 
